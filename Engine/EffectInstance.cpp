@@ -2497,7 +2497,7 @@ EffectInstance::renderRoI(const RenderRoIArgs & args)
     assert( isSupportedBitDepth(outputDepth) && isSupportedComponent(-1, outputComponents) );
     
     if (imageConversionNeeded && renderRetCode != eRenderRoIStatusRenderFailed) {
-        boost::shared_ptr<Image> tmp( new Image(args.components, rod, downscaledImage->getBounds(), mipMapLevel,downscaledImage->getPixelAspectRatio(), args.bitdepth, false) );
+        boost::shared_ptr<Image> tmp( new Image(args.components, downscaledImage->getRoD(), downscaledImage->getBounds(), mipMapLevel,downscaledImage->getPixelAspectRatio(), args.bitdepth, false) );
         
         bool unPremultIfNeeded = getOutputPremultiplication() == eImagePremultiplicationPremultiplied;
         downscaledImage->convertToFormat(downscaledImage->getBounds(),
@@ -4110,7 +4110,7 @@ EffectInstance::getThreadLocalRenderTime() const
             return args.time;
         }
     }
-
+    
     return getApp()->getTimeLine()->currentFrame();
 }
 

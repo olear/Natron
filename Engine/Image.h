@@ -178,7 +178,10 @@ namespace Natron {
                                                          Natron::ImageBitDepthEnum bitdepth,
                                                          const std::map<int, std::vector<RangeD> > & framesNeeded);
 
-
+        
+#ifdef DEBUG
+        void checkBounds_debug();
+#endif
 
        // boost::shared_ptr<ImageParams> getParams() const WARN_UNUSED_RETURN;
 
