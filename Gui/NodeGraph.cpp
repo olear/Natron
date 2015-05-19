@@ -624,6 +624,7 @@ NodeGraph::createNodeGUI(QVBoxLayout *dockContainer,
     } else {
         node_ui.reset( new DotGui(_imp->_nodeRoot) );
     }
+    assert(node_ui);
     node_ui->initialize(this, node_ui, dockContainer, node, requestedByLoad);
     getGui()->getApp()->insertInNodeMapping(node_ui);
     

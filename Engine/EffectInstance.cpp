@@ -3790,6 +3790,7 @@ EffectInstance::getTransform_public(SequenceTime time,
                                     Transform::Matrix3x3* transform)
 {
     RECURSIVE_ACTION();
+    assert(getCanTransform());
     return getTransform(time, renderScale, view, inputToTransform, transform);
 }
 
