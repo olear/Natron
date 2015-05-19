@@ -421,7 +421,7 @@ Node::load(const std::string & pluginID,
     if ( isTrackerNode() ) {
         _imp->isMultiInstance = true;
         ///declare knob that are instance specific
-        boost::shared_ptr<KnobI> subLabelKnob = getKnobByName(kOfxParamStringSublabelName);
+        boost::shared_ptr<KnobI> subLabelKnob = getKnobByName(kNatronOfxParamStringSublabelName);
         if (subLabelKnob) {
             subLabelKnob->setAsInstanceSpecific();
         }
@@ -3187,7 +3187,7 @@ Node::onEffectKnobValueChanged(KnobI* what,
         getApp()->redrawAllViewers();
     } else if ( what == _imp->nodeLabelKnob.get() ) {
         emit nodeExtraLabelChanged( _imp->nodeLabelKnob->getValue().c_str() );
-    } else if (what->getName() == kOfxParamStringSublabelName) {
+    } else if (what->getName() == kNatronOfxParamStringSublabelName) {
         //special hack for the merge node and others so we can retrieve the sublabel and display it in the node's label
         String_Knob* strKnob = dynamic_cast<String_Knob*>(what);
         if (strKnob) {
@@ -3413,7 +3413,7 @@ Node::updateEffectLabelKnob(const QString & name)
     if (!_imp->liveInstance) {
         return;
     }
-    boost::shared_ptr<KnobI> knob = getKnobByName(kOfxParamStringSublabelName);
+    boost::shared_ptr<KnobI> knob = getKnobByName(kNatronOfxParamStringSublabelName);
     String_Knob* strKnob = dynamic_cast<String_Knob*>( knob.get() );
     if (strKnob) {
         strKnob->setValue(name.toStdString(), 0);

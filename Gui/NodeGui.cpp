@@ -2176,7 +2176,7 @@ NodeGui::onNodeExtraLabelChanged(const QString & label)
     }
     _nodeLabel = label;
     if ( _internalNode->isMultiInstance() ) {
-        ///The multi-instances store in the kOfxParamStringSublabelName knob the name of the instance
+        ///The multi-instances store in the kNatronOfxParamStringSublabelName knob the name of the instance
         ///Since the "main-instance" is the one displayed on the node-graph we don't want it to display its name
         ///hence we remove it
         _nodeLabel = String_KnobGui::removeNatronHtmlTag(_nodeLabel);
