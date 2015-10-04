@@ -212,10 +212,10 @@ if [ -z "$ARCH" ]; then
     esac
 fi
 if [ "$ARCH" = "i686" ]; then
-    BF="-O2 -march=i686 -mtune=i686"
+    BF="-O2 -march=i686 -mtune=i686 -static-libgcc -static-libstdc++"
     BIT=32
 elif [ "$ARCH" = "x86_64" ]; then
-    BF="-O2 -fPIC"
+    BF="-O2 -fPIC -static-libgcc -static-libstdc++"
     BIT=64
 else
     BF="-O2"

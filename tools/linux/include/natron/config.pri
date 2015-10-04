@@ -19,3 +19,4 @@ LIBS += -lshiboken-python2.7
 }
 
 QMAKE_LFLAGS += -Wl,-rpath,\\\$\$ORIGIN/../lib
+QMAKE_LFLAGS += -static-libgcc -static-libstdc++

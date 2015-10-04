@@ -123,8 +123,8 @@ if [ "$BUILD_MISC" = "1" ]; then
 
     # build CImg with OpenMP support
     make -C CImg CImg.h || exit 1
-    make -C CImg CXXFLAGS_ADD="-fopenmp" LDFLAGS_ADD="-fopenmp"  CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
-    make  CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+    make -C CImg CXXFLAGS_ADD="-fopenmp" LDFLAGS_ADD="-fopenmp -static-libgcc -static-libstdc++"  CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+    make  CONFIG=relwithdebinfo BITS=$BIT LDFLAGS_ADD="-static-libgcc -static-libstdc++" -j${MKJOBS} || exit 1
     cp -a */Linux-$BIT-*/*.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
     mkdir -p $INSTALL_PATH/docs/openfx-misc || exit 1
@@ -164,7 +164,7 @@ if [ "$BUILD_IO" = "1" ]; then
     sed -i "s/IOPLUG_DEVEL_GIT=.*/IOPLUG_DEVEL_GIT=${IO_V}/" $CWD/commits-hash.sh || exit 1
 
 
-    make OIIO_HOME="${INSTALL_PATH}" SEEXPR_HOME="${INSTALL_PATH}" CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+    make OIIO_HOME="${INSTALL_PATH}" SEEXPR_HOME="${INSTALL_PATH}" CONFIG=relwithdebinfo BITS=$BIT LDFLAGS_ADD="-static-libgcc -static-libstdc++ -lboost_thread -lboost_filesystem -lboost_regex -lboost_system -ljasper -ljpeg -lopenjpeg -lpng12 -lraw_r -ltiff -lz -lbz2 -lfontconfig -lfreetype " -j${MKJOBS} || exit 1
     cp -a IO/Linux-$BIT-*/IO.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
     mkdir -p $INSTALL_PATH/docs/openfx-io || exit 1
@@ -204,7 +204,7 @@ if [ "$BUILD_ARENA" = "1" ]; then
     sed -i "s/ARENAPLUG_DEVEL_GIT=.*/ARENAPLUG_DEVEL_GIT=${ARENA_V}/" $CWD/commits-hash.sh || exit 1
 
 
-    make USE_SVG=1 USE_PANGO=1 STATIC=1 CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+    make USE_SVG=1 USE_PANGO=1 STATIC=1 CONFIG=relwithdebinfo BITS=$BIT LDFLAGS_ADD="-static-libgcc -static-libstdc++" -j${MKJOBS} || exit 1
     cp -a Bundle/Linux-$BIT-*/Arena.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
     mkdir -p $INSTALL_PATH/docs/openfx-arena || exit 1
