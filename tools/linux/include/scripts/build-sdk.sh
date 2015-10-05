@@ -121,6 +121,7 @@ if [ ! -f $INSTALL_PATH/bin/binarycreator ]; then
     $INSTALL_PATH/qt4-static/bin/qmake || exit 1
     make -j${MKJOBS} || exit 1
     strip -s bin/*
+    mkdir -p $INSTALL_PATH/bin
     cp bin/* $INSTALL_PATH/bin/ || exit 1
 fi
 
@@ -296,7 +297,7 @@ if [ ! -f "$INSTALL_PATH/lib/libexpat.a" ]; then
     fi
     tar xvf "$SRC_PATH/$EXPAT_TAR" || exit 1
     cd expat* || exit 1
-    env CFLAGS="$BF" CXXFLAGS="$BF" ./configure --prefix="$INSTALL_PATH" --enable-static --enable-shared || exit 1
+    env CFLAGS="$BF" CXXFLAGS="$BF" ./configure --prefix="$INSTALL_PATH" --enable-static --disable-shared || exit 1
     make -j${MKJOBS} || exit 1
     make install || exit 1
 fi
@@ -382,7 +383,7 @@ if [ ! -f "$INSTALL_PATH/lib/pkgconfig/libxml-2.0.pc" ]; then
 fi
 
 # Install xslt
-if [ ! -f "$INSTALL_PATH/lib/pkgconfig/libxslt-2.0.pc" ]; then
+if [ ! -f "$INSTALL_PATH/lib/pkgconfig/libxslt.pc" ]; then
     cd "$TMP_PATH" || exit 1
     if [ ! -f "$SRC_PATH/$LIBXSLT_TAR" ]; then
         wget "$THIRD_PARTY_SRC_URL/$LIBXSLT_TAR" -O "$SRC_PATH/$LIBXSLT_TAR" || exit 1
@@ -548,7 +549,7 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/cairo.pc ]; then
     fi
     tar xvf $SRC_PATH/$CAIRO_TAR || exit 1
     cd cairo-* || exit 1
-    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include -I${INSTALL_PATH}/include/pixman-1" LDFLAGS="-L${INSTALL_PATH}/lib -lpixman-1" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
+    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include -I${INSTALL_PATH}/include/pixman-1" LDFLAGS="-L${INSTALL_PATH}/lib -lpixman-1" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --disable-shared --enable-static || exit 1
     make -j${MKJOBS} || exit 1
     make install || exit 1
     mkdir -p $INSTALL_PATH/docs/cairo || exit 1
@@ -805,14 +806,15 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/theora.pc ]; then
 fi
 
 # Install modplug
-if [ ! -f $INSTALL_PATH/lib/libmodplug.a ]; then
+if [ ! -f $INSTALL_PATH/lib/pkgconfig/libmodplug.pc ]; then
     cd $TMP_PATH || exit 1
     if [ ! -f $SRC_PATH/$MODPLUG_TAR ]; then
         wget $THIRD_PARTY_SRC_URL/$MODPLUG_TAR -O $SRC_PATH/$MODPLUG_TAR || exit 1
     fi
     tar xvf $SRC_PATH/$MODPLUG_TAR || exit 1
     cd libmodplug-* || exit 1
-    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --disable-shared --enable-static || exit 1
+    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
+    rm -f $INSTALL_PATH/lib/libmodplug*.so* || exit 1
     make -j${MKJOBS} || exit 1
     make install || exit 1
     mkdir -p $INSTALL_PATH/docs/libmodplug || exit 1
@@ -887,9 +889,11 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/schroedinger-1.0.pc ]; then
     fi
     tar xvf $SRC_PATH/$DIRAC_TAR || exit 1
     cd schro* || exit 1
-    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --disable-static || exit 1
+    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
     make -j${MKJOBS} || exit 1
     make install || exit 1
+    rm -f $INSTALL_PATH/lib/libschro*.so*
+    sed -i "s/-lschroedinger-1.0/-lschroedinger-1.0 -lorc-0.4/" $INSTALL_PATH/lib/pkgconfig/schroedinger-1.0.pc || exit 1
     mkdir -p $INSTALL_PATH/docs/dirac || exit 1
     cp COP* $INSTALL_PATH/docs/dirac/
 fi
@@ -965,7 +969,7 @@ if [ ! -f $INSTALL_PATH/bin/qmake ]; then
     tar xvf $SRC_PATH/$QT_TAR || exit 1
     cd qt* || exit 1
     QT_SRC=`pwd`/src
-    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure -prefix $INSTALL_PATH $QT_CONF -shared || exit 1
+    env CXX="$INSTALL_PATH/gcc/bin/g++ $BF -I${INSTALL_PATH}/include -L${INSTALL_PATH}/lib" CC="$INSTALL_PATH/gcc/bin/gcc" CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure -prefix $INSTALL_PATH $QT_CONF -shared || exit 1
 
     # https://bugreports.qt-project.org/browse/QTBUG-5385
     LD_LIBRARY_PATH="$LD_LIBRARY_PATH":`pwd`/lib make -j${MKJOBS} || exit  1
@@ -1000,18 +1004,18 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/shiboken.pc ]; then
     tar xvf $SRC_PATH/$SHIBOK_TAR || exit 1
     cd shiboken-* || exit 1
     mkdir -p build && cd build || exit 1
-    cmake ../ -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH  \
+    env CXX="$INSTALL_PATH/gcc/bin/g++ -static-libgcc -static-libstdc++" CC="$INSTALL_PATH/gcc/bin/gcc" cmake ../ -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH  \
           -DCMAKE_BUILD_TYPE=Release   \
           -DBUILD_TESTS=OFF            \
           -DPYTHON_EXECUTABLE=$PY_EXE \
           -DPYTHON_LIBRARY=$PY_LIB \
           -DPYTHON_INCLUDE_DIR=$PY_INC \
           -DUSE_PYTHON3=$USE_PY3 \
-          -DQT_QMAKE_EXECUTABLE=$INSTALL_PATH/bin/qmake -DCMAKE_EXE_LINKER_FLAGS="-lz"
+          -DQT_QMAKE_EXECUTABLE=$INSTALL_PATH/bin/qmake -DCMAKE_EXE_LINKER_FLAGS="-lz -static-libgcc -static-libstdc++"
     make -j${MKJOBS} || exit 1 
     make install || exit 1
-    mkdir -p $INSTALL_PATH/docs/shibroken || exit 1
-    cp ../COPY* $INSTALL_PATH/docs/shibroken/
+    mkdir -p $INSTALL_PATH/docs/shiboken || exit 1
+    cp ../COPY* $INSTALL_PATH/docs/shiboken/
 fi
 
 # Install pyside
@@ -1023,11 +1027,11 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/pyside.pc ]; then
     tar xvf $SRC_PATH/$PYSIDE_TAR || exit 1
     cd pyside-* || exit 1
     mkdir -p build && cd build || exit 1
-    cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF \
+    env CXX="$INSTALL_PATH/gcc/bin/g++ -static-libgcc -static-libstdc++" CC="$INSTALL_PATH/gcc/bin/gcc" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF \
           -DQT_QMAKE_EXECUTABLE=$INSTALL_PATH/bin/qmake \
           -DPYTHON_EXECUTABLE=$PY_EXE \
           -DPYTHON_LIBRARY=$PY_LIB \
-          -DPYTHON_INCLUDE_DIR=$PY_INC
+          -DPYTHON_INCLUDE_DIR=$PY_INC -DCMAKE_EXE_LINKER_FLAGS="-static-libgcc -static-libstdc++"
     make -j${MKJOBS} || exit 1 
     make install || exit 1
     mkdir -p $INSTALL_PATH/docs/pyside || exit 1
@@ -1044,7 +1048,7 @@ if [ ! -f $INSTALL_PATH/lib/libSeExpr.a ]; then
     cd SeExpr-* || exit 1
     mkdir build || exit 1
     cd build || exit 1
-    CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
+    env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
     make || exit 1
     make install || exit 1
     mkdir -p $INSTALL_PATH/docs/seexpr || exit 1
