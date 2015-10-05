@@ -814,9 +814,9 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/libmodplug.pc ]; then
     tar xvf $SRC_PATH/$MODPLUG_TAR || exit 1
     cd libmodplug-* || exit 1
     env CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
-    rm -f $INSTALL_PATH/lib/libmodplug*.so* || exit 1
     make -j${MKJOBS} || exit 1
     make install || exit 1
+    #rm -f $INSTALL_PATH/lib/libmodplug*.so* || exit 1
     mkdir -p $INSTALL_PATH/docs/libmodplug || exit 1
     cp COPY* $INSTALL_PATH/docs/libmodplug/
 fi
@@ -929,7 +929,7 @@ if [ ! -f $INSTALL_PATH/lib/libxvidcore.so.4.3 ]; then
 fi
 
 # Install ffmpeg
-LGPL_SETTINGS="--enable-avresample --enable-libmp3lame --enable-libvorbis --enable-libopus --enable-libtheora --enable-libschroedinger --enable-libopenjpeg --enable-libmodplug --enable-libvpx --enable-libspeex --disable-libxcb --disable-libxcb-shm --disable-libxcb-xfixes --disable-indev=jack --disable-outdev=xv --disable-vda --disable-xlib"
+LGPL_SETTINGS="--enable-avresample --enable-libmp3lame --enable-libvorbis --enable-libopus --enable-libtheora --enable-libschroedinger --enable-libopenjpeg --disable-libmodplug --enable-libvpx --enable-libspeex --disable-libxcb --disable-libxcb-shm --disable-libxcb-xfixes --disable-indev=jack --disable-outdev=xv --disable-vda --disable-xlib"
 GPL_SETTINGS="${LGPL_SETTINGS} --enable-gpl --enable-libx264 --enable-libxvid --enable-version3"
 
 if [ "$REBUILD_FFMPEG" = "1" ]; then
