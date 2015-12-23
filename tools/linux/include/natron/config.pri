@@ -1,8 +1,8 @@
 boost: LIBS += -lboost_serialization
-expat: LIBS += -lexpat
-expat: PKGCONFIG -= expat
 INCLUDEPATH+=/opt/Natron-CY2015/include
 LIBS+="-L/opt/Natron-CY2015/lib"
+
+LIBS += -lfontconfig -lfreetype -lexpat -lz
 
 pyside {
 PKGCONFIG -= pyside

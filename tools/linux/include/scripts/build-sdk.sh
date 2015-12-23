@@ -780,7 +780,7 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/glew.pc ]; then
         make -j${MKJOBS} 'CFLAGS.EXTRA=-O2 -g -m64 -fPIC -mtune=generic' includedir=/usr/include GLEW_DEST= libdir=/usr/lib64 bindir=/usr/bin || exit 1
     fi
     make install GLEW_DEST=$INSTALL_PATH libdir=/lib bindir=/bin includedir=/include || exit 1
-    #rm -f $INSTALL_PATH/lib/*GLEW*.so*
+    rm -f $INSTALL_PATH/lib/*GLEW*.so*
 fi
 
 # Install ocio

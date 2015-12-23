@@ -164,7 +164,7 @@ if [ "$BUILD_IO" = "1" ]; then
     sed -i "s/IOPLUG_DEVEL_GIT=.*/IOPLUG_DEVEL_GIT=${IO_V}/" $CWD/commits-hash.sh || exit 1
 
 
-    make OIIO_HOME="${INSTALL_PATH}" SEEXPR_HOME="${INSTALL_PATH}" CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+    make LDFLAGS_ADD="-lboost_thread -lboost_filesystem -lboost_regex -lboost_system -ljasper -ljpeg -lopenjpeg -lpng12 -lraw_r -ltiff -lz -lbz2 -lfontconfig -lfreetype -lIlmImf -lz -lImath -lHalf -lIex -lIexMath -lIlmThread -fopenmp -lraw -lstdc++ -llcms2 -lm" OIIO_HOME="${INSTALL_PATH}" SEEXPR_HOME="${INSTALL_PATH}" CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
     cp -a IO/Linux-$BIT-*/IO.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
     mkdir -p $INSTALL_PATH/docs/openfx-io || exit 1
@@ -208,7 +208,7 @@ if [ "$BUILD_ARENA" = "1" ]; then
     sed -i "s/ARENAPLUG_DEVEL_GIT=.*/ARENAPLUG_DEVEL_GIT=${ARENA_V}/" $CWD/commits-hash.sh || exit 1
 
 
-    make USE_SVG=1 USE_PANGO=1 STATIC=1 CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+    make LDFLAGS_ADD="-lrsvg-2 -lgio-2.0 -lresolv -lgdk_pixbuf-2.0 -lcairo -lgmodule-2.0 -ldl -lgobject-2.0 -lffi -lpixman-1 -lpangoxft-1.0 -lpangoft2-1.0 -lXft -lharfbuzz -lpango-1.0 -lm -lgobject-2.0 -lffi -lglib-2.0 -lrt -lXrender -lfontconfig -lexpat -lfreetype -lz -lX11 -lpthread -lxcb -lXau" USE_SVG=1 USE_PANGO=1 STATIC=1 CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
     cp -a Bundle/Linux-$BIT-*/Arena.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
     mkdir -p $INSTALL_PATH/docs/openfx-arena || exit 1
