@@ -150,7 +150,7 @@ for y in $OFX_LIB_DEP; do
     cp -v $y $IO_LIBS/ || exit 1
 done
 
-rm -f $IO_LIBS/{liblcms*,libgcc*,libstdc*,libbz2*,libfont*,libfree*,libpng*,libjpeg*,libtiff*,libz.*}
+rm -f $IO_LIBS/{*gomp*,liblcms*,libgcc*,libstdc*,libbz2*,libfont*,libfree*,libpng*,libjpeg*,libtiff*,libz.*}
 (cd $IO_LIBS ;
   #ln -sf ../../../../../lib/libbz2.so.1 .
   #ln -sf ../../../../../lib/libfontconfig.so.1 .
@@ -161,6 +161,7 @@ rm -f $IO_LIBS/{liblcms*,libgcc*,libstdc*,libbz2*,libfont*,libfree*,libpng*,libj
   #ln -sf ../../../../../lib/libz.so.1 .
   ln -sf ../../../../../lib/libgcc_s.so.1 .
   ln -sf ../../../../../lib/libstdc++.so.6 .
+  ln -sf ../../../../../lib/libgomp.so.1 .
   #ln -sf ../../../../../lib/liblcms2.so.2 .
   for i in *.so*; do
     patchelf --set-rpath "\$ORIGIN" $i
