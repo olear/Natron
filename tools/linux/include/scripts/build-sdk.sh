@@ -221,6 +221,19 @@ if [ ! -f "$INSTALL_PATH/lib/libz.a" ]; then
     rm -f $INSTALL_PATH/lib/libz.so*
 fi
 
+# Install libzip
+if [ ! -f "$INSTALL_PATH/lib/pkgconfig/libzip.pc" ]; then
+    cd "$TMP_PATH" || exit 1
+    if [ ! -f "$SRC_PATH/$ZIP_TAR" ]; then
+        wget "$THIRD_PARTY_SRC_URL/$ZIP_TAR" -O "$SRC_PATH/$ZIP_TAR" || exit 1
+    fi
+    tar xvf "$SRC_PATH/$ZIP_TAR" || exit 1
+    cd libzip* || exit 1
+    env CFLAGS="$BF" CXXFLAGS="$BF" ./configure --prefix="$INSTALL_PATH" --enable-static --disable-shared || exit 1
+    make -j${MKJOBS} || exit 1
+    make install || exit 1
+fi
+
 # Install bzip
 if [ ! -f "$INSTALL_PATH/lib/libbz2.a" ]; then
     cd "$TMP_PATH" || exit 1

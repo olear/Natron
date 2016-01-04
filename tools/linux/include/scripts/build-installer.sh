@@ -253,9 +253,9 @@ PLUG_DEPENDS=$(ldd $CLIBS_PATH/data/bin/*/*|grep opt | awk '{print $3}')
 for z in $PLUG_DEPENDS; do
     cp -v $z $CLIBS_PATH/data/lib/ || exit 1
 done
-if [ -f $INC_PATH/misc/compat${BIT}.tgz ]; then
-    tar xvf $INC_PATH/misc/compat${BIT}.tgz -C $CLIBS_PATH/data/lib/ || exit 1
-fi
+#if [ -f $INC_PATH/misc/compat${BIT}.tgz ]; then
+#    tar xvf $INC_PATH/misc/compat${BIT}.tgz -C $CLIBS_PATH/data/lib/ || exit 1
+#fi
 
 #cp $INSTALL_PATH/lib/{liblcms2.so.2,libcairo.so.2} $CLIBS_PATH/data/lib/ || exit 1
 cp $INSTALL_PATH/lib/{libicudata.so.55,libicui18n.so.55,libicuuc.so.55} $CLIBS_PATH/data/lib/ || exit 1
